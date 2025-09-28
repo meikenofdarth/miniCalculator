@@ -1,20 +1,25 @@
 // Jenkinsfile
 pipeline {
-    agent any
+    agent none
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Source Code') {
+            agent any
             steps {
-                // Get the code from the GitHub repository
-                git 'https://github.com/meikenofdarth/miniCalculator'
-                // If your repo is private, you would need to add credentials
+                echo 'Checking out code from GitHub...'
+                // 'scm' is a built-in variable that refers to the SCM
+                // configured in the Jenkins UI. This is the preferred way.
+                checkout scm
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
+            agent {
+                docker { image 'python:3.9-slim' }
+            }
             steps {
-                // Execute the unit tests
-                sh 'python3 -m unittest test_calculator.py'
+                echo 'Running unit tests inside a Python container...'
+                sh 'python -m unittest test_calculator.py'
             }
         }
     }
