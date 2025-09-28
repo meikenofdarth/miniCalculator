@@ -1,43 +1,36 @@
 // Jenkinsfile
 pipeline {
-    agent none
+    // 1. Define the agent at the top level.
+    // This creates ONE workspace for the entire pipeline.
+    agent any
 
     environment {
+        // Use your Docker Hub username
         DOCKER_HUB_USERNAME = "smoothlake67"
         DOCKER_IMAGE_NAME   = "${DOCKER_HUB_USERNAME}/mini-calculator"
         DOCKER_CREDENTIALS_ID = "dockerhub-credentials"
     }
 
     stages {
-        stage('Checkout Source Code') {
-            agent any
-            steps {
-                echo 'Checking out code from GitHub...'
-                checkout scm
-
-                // Stash all files ('**/*') and name the stash 'source'
-                echo 'Stashing source code...'
-                stash name: 'source', includes: '**/*'
-            }
-        }
+        // 2. No separate 'Checkout' stage is needed.
+        // Jenkins does it automatically because of the top-level 'agent'.
 
         stage('Run Unit Tests') {
-            agent {
-                docker { image 'python:3.9-slim' }
-            }
             steps {
-                echo 'Running unit tests inside a Python container...'
-                sh 'python -m unittest test_calculator.py'
+                script {
+                    // 3. Use 'inside' to run steps within a container
+                    // without needing a separate agent or workspace.
+                    docker.image('python:3.9-slim').inside {
+                        echo 'Running unit tests inside a Python container...'
+                        sh 'python -m unittest test_calculator.py'
+                    }
+                }
             }
         }
 
         stage('Build and Push Docker Image') {
-            agent any
             steps {
-                // Before we do anything, unstash the source code here
-                echo 'Unstashing source code...'
-                unstash 'source'
-                
+                // 4. This stage runs in the same workspace. The Dockerfile is guaranteed to be here.
                 script {
                     echo "Building Docker image: ${DOCKER_IMAGE_NAME}"
                     def appImage = docker.build(DOCKER_IMAGE_NAME)
