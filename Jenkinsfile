@@ -12,8 +12,7 @@ pipeline {
     }
 
     stages {
-        // 2. No separate 'Checkout' stage is needed.
-        // Jenkins does it automatically because of the top-level 'agent'.
+        // 2. Jenkins automatically checks out the code because of the top-level 'agent'.
 
         stage('Run Unit Tests') {
             steps {
@@ -39,6 +38,23 @@ pipeline {
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS_ID) {
                         appImage.push('latest')
                         appImage.push(env.BUILD_NUMBER)
+                    }
+                }
+            }
+        }
+
+        // --- NEW STAGE ADDED BELOW ---
+
+        stage('Deploy with Ansible') {
+            steps {
+                script {
+                    // 5. Use 'inside' again to get a clean Ansible environment.
+                    // This container has Ansible pre-installed.
+                    docker.image('cytopia/ansible:latest').inside {
+                        echo 'Deploying application using Ansible...'
+                        // 6. The playbook runs and connects to the host's Docker daemon
+                        // via the socket we mounted for the main Jenkins agent.
+                        sh 'ansible-playbook -i inventory.ini deploy.yml'
                     }
                 }
             }
