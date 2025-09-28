@@ -29,7 +29,7 @@ The Jenkins server runs as a Docker container. If you have already created the c
 # Start the existing Jenkins container
 docker start jenkins-lts
 ```
-*(In the rare case you need to recreate it from scratch, use the full `docker run` command from our setup process).*
+*(In the rare case we need to recreate it from scratch, use the full `docker run` command from the setup process).*
 
 ```
 docker run \
@@ -51,11 +51,11 @@ GitHub needs a public URL to send webhooks to our local Jenkins instance.
 ```bash
 # Navigate to the directory where you have the ngrok executable
 # Start the tunnel for port 8080
-./ngrok http 8080
+ngrok http 8080 --domain unspasmed-milo-gymnastically.ngrok-free.dev
 ```
-**Important:** ngrok will provide a public `https` URL (e.g., `https://<random-string>.ngrok-free.app`). **Keep this terminal window open**, as closing it will kill the tunnel.
+Keep this terminal window open to keep the tunnel active. The GitHub webhook is already configured for this address, so no further changes are needed.
 
-### Step 3: Update the GitHub Webhook
+<!-- ### Step 3: Update the GitHub Webhook
 The free version of ngrok generates a new URL every time you start it. You must update this in your GitHub repository settings.
 
 1.  Copy the new `httpss` URL from the ngrok terminal.
@@ -63,7 +63,7 @@ The free version of ngrok generates a new URL every time you start it. You must 
 3.  Go to **Settings** -> **Webhooks**.
 4.  Click **Edit** next to the existing webhook.
 5.  Replace the old URL in the **Payload URL** field with the new one from ngrok. Make sure it ends with `/github-webhook/`.
-6.  Click **Update webhook**.
+6.  Click **Update webhook**. -->
 
 ### Step 4: Trigger the Pipeline
 The setup is now complete. You can trigger the entire automated pipeline in two ways:
@@ -99,36 +99,3 @@ docker attach scientific-calculator-app
 ```
 You can now use the calculator. To detach from the container without stopping it, press **`Ctrl+P`** followed by **`Ctrl+Q`**.
 
-
-
-
-### How to Run This Project After a System Restart
-
-This guide explains how to restart the necessary services and run the pipeline after shutting down your local machine.
-
-#### Prerequisites
-*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) must be installed and running.
-*   [ngrok](https://ngrok.com/download) must be downloaded and authenticated with a static domain.
-
-#### Step 1: Start the Jenkins Service
-The Jenkins server runs as a Docker container. In a terminal, run:
-
-```bash
-docker start jenkins-lts
-```
-You can access the Jenkins dashboard at `http://localhost:8080`.
-
-#### Step 2: Expose Jenkins with Your Static ngrok Domain
-In a second terminal, start the ngrok tunnel using your personal static domain. **This command is crucial.**
-
-```bash
-ngrok http 8080 --domain unspasmed-milo-gymnastically.ngrok-free.dev
-```
-Keep this terminal window open to keep the tunnel active. The GitHub webhook is already configured for this address, so no further changes are needed.
-
-#### Step 3: Trigger the Pipeline
-You are now ready to work. Trigger the pipeline by pushing a code change to the `main` branch.
-
-```bash
-git push origin main
-```
