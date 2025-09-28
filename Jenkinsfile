@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Get the code from the GitHub repository
-                git 'https://github.com/YOUR_USERNAME/scientific-calculator-devops.git'
+                git 'https://github.com/meikenofdarth/miniCalculator'
                 // If your repo is private, you would need to add credentials
             }
         }
