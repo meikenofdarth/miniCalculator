@@ -1,0 +1,43 @@
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+*.log
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# C++ / C
+*.out
+*.o
+*.exe
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Environment / Secrets
+.env
+*.key
+*.pem
+
+# Misc
+coverage/
+dist/
