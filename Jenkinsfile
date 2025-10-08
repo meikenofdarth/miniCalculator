@@ -51,4 +51,23 @@ pipeline {
             }
         }
     }
+    post {
+        // This block runs for any outcome
+        always {
+            script {
+                // Using the emailext step from the Email Extension plugin
+                emailext(
+                    to: 'sanchit1472@gmail.com', 
+                    subject: "${currentBuild.currentResult}: Pipeline '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}",
+                    body: """
+                    <h2>Pipeline Result: ${currentBuild.currentResult}</h2>
+                    <p>A new build has completed for the pipeline: <strong>${env.JOB_NAME}</strong></p>
+                    <p>Build Number: <strong>${env.BUILD_NUMBER}</strong></p>
+                    <p>For more details, view the console output here:<br>
+                    <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    """
+                )
+            }
+        }
+    }
 }
