@@ -1,0 +1,11 @@
+# Dockerfile.jenkins
+FROM jenkins/jenkins:lts-jdk17
+
+# Switch to the root user to install packages
+USER root
+
+# Install the Docker CLI
+RUN apt-get update && apt-get install -y docker.io
+
+# Drop back to the jenkins user
+USER jenkins
