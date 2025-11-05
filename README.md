@@ -43,6 +43,10 @@ docker run \
   my-jenkins-with-docker
 ```
 
+#### Use the following to build my-jenkins-with-docker if the image is not present
+```
+docker build -f Dockerfile.jenkins -t my-jenkins-with-docker .
+```
 Navigate to `http://localhost:8080` to ensure Jenkins is up and running.
 
 ### Step 2: Expose Jenkins to the Internet with ngrok
